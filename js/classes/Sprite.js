@@ -1,5 +1,5 @@
 class Sprite {
-    constructor({position, imageSrc}) {
+    constructor({ position, imageSrc }) {
         this.position     = position
         this.image        = new Image()
         this.image.onload = () => {
@@ -10,6 +10,10 @@ class Sprite {
     }
     draw() {
         if (!this.loaded) return
-        ctx.drawImage(this.image, this.position.x, this.position.y)
+        ctx.drawImage(
+            this.image,
+            this.position.x,
+            this.position.y
+        )
     }
 }

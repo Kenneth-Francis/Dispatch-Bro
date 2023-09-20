@@ -1,3 +1,5 @@
+//------------------------------------------
+//-------------- CANVAS SETUP --------------
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -8,7 +10,10 @@ const size    = 64;
 canvas.width  = 16 * size + canvas.x; // 1280px;
 canvas.height =  9 * size + canvas.y; // 720px;
 
-// CONTROLLER DEFINITIONS
+const collisionBlocks = collisionsLevel1.createObjectsFrom2D()
+
+//-------------------------------------------
+//-------------- GAMEPAD SETUP --------------
 let buttonsPressed = [];
 let controllerIdx = null;
 let upPressed     = false;
@@ -71,6 +76,9 @@ const player = new Player()
 
 function gameLoop() {
     backgroundLevel1.draw();
+    collisionBlocks.forEach(collisionBlock => {
+        collisionBlock.draw();
+    })
     
     controllerInput();
     player.draw();
