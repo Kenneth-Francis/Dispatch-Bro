@@ -1,18 +1,17 @@
 class Player {
-    constructor() {
+    constructor({ collisionBlocks = [] }) {
         this.position = {
             x: 200,
             y: 200
         }
+
         this.velocity = {
             x: 0,
             y: 0
         }
-        this.gravityScale = .25
 
         this.width  = 50
         this.height = 50
-
         this.sides = {
             top:    this.position.y,
             bottom: this.position.y + this.height,
@@ -20,55 +19,87 @@ class Player {
             right:  this.position.x + this.width
         }
 
-        this.color = 'Maroon'
+        this.gravityScale = .25
+
+        this.collisionBlocks = collisionBlocks
     }
 
     draw() {
         // Draw Player ->> Canvas
-        ctx.fillStyle = player.color
-        ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+        ctx.fillStyle = 'Maroon'
+        ctx.fillRect(
+            this.position.x,
+            this.position.y,
+            this.width,
+            this.height
+        )
     }
 
-    gravity() {
-        // Set -> Get Updated Position
-        this.position.y  += this.velocity.y;
-        this.sides.bottom = this.position.y + this.height;
-        // If Airborne -> Apply Gravity
-        if (this.sides.bottom + this.velocity.y < canvas.height) {
-            this.velocity.y += this.gravityScale
-        } else this.velocity.y = 0;
+    update() {
+        this.position.x += this.velocity.x;
+
+        this.checkForHorizontalCollisions();
+        this.applyGravity();
+        this.checkForVerticalCollisions();
     }
 
-    move() {
-        // MOVE LEFT
-        if (leftPressed) {
-            this.position.x += this.velocity.x;
-            this.sides.left = this.position.x;
-            if (this.sides.left + this.velocity.x > canvas.x) {
-                this.velocity.x = -3.5;
-            } else this.velocity.x = 0;
-        }
-        // MOVE RIGHT
-        if (rightPressed) {
-            this.position.x += this.velocity.x;
-            this.sides.right = this.position.x + this.width;
-            if (this.sides.right + this.velocity.x < canvas.x + canvas.width) {
-                this.velocity.x = 3.5;
-            } else this.velocity.x = 0;
-        }
-        // JUMP
-        if (this.sides.bottom + this.velocity.y >= canvas.height) {
-            this.velocity.y = 0;
-            if (aPressed) {
-                this.velocity.y -= 10;
+    checkForHorizontalCollisions() {
+        for (let i = 0; i < this.collisionBlocks.length; i++) {
+            const collisionBlock = this.collisionBlocks[i];
+            
+            // If Collision 
+            if (
+                this.position.x <= collisionBlock.position.x + collisionBlock.width &&
+                this.position.x + this.width  >= collisionBlock.position.x &&
+                this.position.y + this.height >= collisionBlock.position.y &&
+                this.position.y <= collisionBlock.position.y + collisionBlock.height
+            ) {
+                // Left Side
+                if (this.velocity.x < 0) {
+                    this.position.x = collisionBlock.position.x + collisionBlock.width + 0.01;
+                    break
+                }
+                // Right Side
+                if (this.velocity.x > 0) {
+                    this.position.x = collisionBlock.position.x - this.width - 0.01;
+                    break
+                }
             }
         }
     }
 
-    update() {
-        // UPDATE PLAYER POSITION
-        player.gravity();
-        player.move();
+    applyGravity() {
+        this.velocity.y += this.gravityScale;
+        this.position.y += this.velocity.y;
+    }
 
+    checkForVerticalCollisions() {
+        for (let i = 0; i < this.collisionBlocks.length; i++) {
+            const collisionBlock = this.collisionBlocks[i];
+            
+            // If Collision
+            if (
+                this.position.x <= collisionBlock.position.x + collisionBlock.width &&
+                this.position.x + this.width  >= collisionBlock.position.x &&
+                this.position.y + this.height >= collisionBlock.position.y &&
+                this.position.y <= collisionBlock.position.y + collisionBlock.height
+            ) {
+                // Top Side
+                if (this.velocity.y < 0) {
+                    this.velocity.y = 0;
+                    this.position.y = collisionBlock.position.y + collisionBlock.height + 0.01;
+                    break
+                }
+                // Bottom Side
+                if (this.velocity.y > 0) {
+                    this.velocity.y = 0;
+                    this.position.y = collisionBlock.position.y - this.height - 0.01;
+                    if (aPressed) {
+                        player.velocity.y = -10;
+                    }
+                    break
+                }
+            }
+        }
     }
 }

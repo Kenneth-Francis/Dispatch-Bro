@@ -12,6 +12,21 @@ canvas.height =  9 * size + canvas.y; // 720px;
 
 const collisionBlocks = collisionsLevel1.createObjectsFrom2D()
 
+//---------------------------------------
+//------------ CLASS OBJECTS ------------
+
+const backgroundLevel1 = new Sprite({
+    position: {
+        x: 0,
+        y: 0
+    },
+    imageSrc: './img/backgroundLevel1.png'
+})
+
+const player = new Player({
+    collisionBlocks
+})
+
 //-------------------------------------------
 //-------------- GAMEPAD SETUP --------------
 let buttonsPressed = [];
@@ -61,18 +76,6 @@ function controllerInput() {
     }
 }
 
-//---------------------------------------
-//------------ CLASS OBJECTS ------------
-
-const backgroundLevel1 = new Sprite({
-    position: {
-        x: 0,
-        y: 0
-    },
-    imageSrc: './img/backgroundLevel1.png'
-})
-
-const player = new Player()
 
 function gameLoop() {
     backgroundLevel1.draw();
@@ -81,6 +84,13 @@ function gameLoop() {
     })
     
     controllerInput();
+    if (rightPressed) {
+        player.velocity.x = 3.5;
+    } else if (leftPressed) {
+        player.velocity.x = -3.5;
+    } else {
+        player.velocity.x = 0;
+    }
     player.draw();
     player.update();
     
