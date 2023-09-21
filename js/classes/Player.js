@@ -1,5 +1,6 @@
-class Player {
-    constructor({ collisionBlocks = [] }) {
+class Player extends Sprite {
+    constructor({ collisionBlocks = [], imageSrc, frameRate }) {
+        super({ imageSrc, frameRate })
         this.position = {
             x: 200,
             y: 200
@@ -10,8 +11,6 @@ class Player {
             y: 0
         }
 
-        this.width  = 50
-        this.height = 50
         this.sides = {
             top:    this.position.y,
             bottom: this.position.y + this.height,
@@ -24,18 +23,10 @@ class Player {
         this.collisionBlocks = collisionBlocks
     }
 
-    draw() {
-        // Draw Player ->> Canvas
-        ctx.fillStyle = 'Maroon'
-        ctx.fillRect(
-            this.position.x,
-            this.position.y,
-            this.width,
-            this.height
-        )
-    }
-
     update() {
+        // BLUE BOX
+        // ctx.fillStyle = '#0000FF55';
+        // ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
         this.position.x += this.velocity.x;
 
         this.checkForHorizontalCollisions();
