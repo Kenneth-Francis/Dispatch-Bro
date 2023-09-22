@@ -73,6 +73,8 @@ let levels = {
         init: () => {
             collisionBlocks = collisionsLevel1.createObjectsFrom2D()
             player.collisionBlocks = collisionBlocks
+            player.position.x = 200
+            player.position.y = 270
 
             if (player.currentAnimation) player.currentAnimation.isActive = false
 
