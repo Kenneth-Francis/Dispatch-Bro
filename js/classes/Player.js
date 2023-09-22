@@ -1,6 +1,6 @@
 class Player extends Sprite {
-    constructor({ collisionBlocks = [], imageSrc, frameRate, animations }) {
-        super({ imageSrc, frameRate, animations })
+    constructor({ collisionBlocks = [], imageSrc, frameRate, animations, loop }) {
+        super({ imageSrc, frameRate, animations, loop })
         this.position = {
             x: 200,
             y: 200
@@ -46,12 +46,48 @@ class Player extends Sprite {
         this.checkForVerticalCollisions();
     }
 
+    handleInput() {
+        if (this.preventInput) return
+        this.velocity.x = 0
+        if (rightPressed) {
+            this.switchSprite('runRight')
+            this.velocity.x = 2;
+            this.lastDirection = 'right'
+        } else if (leftPressed) {
+            this.switchSprite('runLeft')
+            this.velocity.x = -2;
+            this.lastDirection = 'left'
+        } else {
+            if (this.lastDirection === 'left') this.switchSprite('idleLeft')
+            else this.switchSprite('idleRight')
+        }
+        if (upPressed) {
+            for (let i = 0; i < doors.length; i++) {
+                const door = doors[i]
+    
+                if (player.hitbox.position.x + player.hitbox.width <= door.position.x + door.width &&
+                    player.hitbox.position.x >= door.position.x &&
+                    player.hitbox.position.y + player.hitbox.height >= door.position.y &&
+                    player.hitbox.position.y <= door.position.y + door.height) {
+                        player.velocity.x   = 0
+                        player.velocity.y   = 0
+                        player.preventInput = true
+                        player.switchSprite('enterDoor')
+                        door.play()
+                        console.log("We are colliding")
+                        return
+                }
+            }
+        }
+    }
+
     switchSprite(name) {
         if (this.image === this.animations[name].image) return
         this.currentFrame = 0
         this.image        = this.animations[name].image
         this.frameRate    = this.animations[name].frameRate
         this.frameBuffer  = this.animations[name].frameBuffer
+        this.loop         = this.animations[name].loop
     }
 
     updateHitbox() {

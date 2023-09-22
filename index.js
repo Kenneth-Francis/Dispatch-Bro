@@ -52,8 +52,28 @@ const player = new Player({
             loop: true,
             imageSrc: './img/king/runLeft.png'
         },
+        enterDoor: {
+            frameRate: 8,
+            frameBuffer: 22,
+            loop: false,
+            imageSrc: './img/king/enterDoor.png'
+        },
     }
 })
+
+const doors = [
+    new Sprite({
+        position: {
+            x: 767,
+            y: 270
+        },
+        imageSrc: './img/doorOpen.png',
+        frameRate: 5,
+        frameBuffer: 25,
+        loop: false,
+        autoplay: false
+    })
+]
 
 
 //-------------------------------------------
@@ -75,25 +95,18 @@ let rtPressed     = false;
 //-------------------------------------------
 //---------------- GAME LOOP ----------------
 function gameLoop() {
+
     backgroundLevel1.draw();
     collisionBlocks.forEach(collisionBlock => {
         collisionBlock.draw();
     })
+
+    doors.forEach(door => {
+        door.draw();
+    })
     
     controllerInput();
-    if (rightPressed) {
-        player.switchSprite('runRight')
-        player.velocity.x = 2;
-        player.lastDirection = 'right'
-    } else if (leftPressed) {
-        player.switchSprite('runLeft')
-        player.velocity.x = -2;
-        player.lastDirection = 'left'
-    } else {
-        if (player.lastDirection === 'left') player.switchSprite('idleLeft')
-        else player.switchSprite('idleRight')
-        player.velocity.x = 0;
-    }
+    player.handleInput();
     player.draw();
     player.update();
     
