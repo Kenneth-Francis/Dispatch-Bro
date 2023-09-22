@@ -65,16 +65,15 @@ class Player extends Sprite {
             for (let i = 0; i < doors.length; i++) {
                 const door = doors[i]
     
-                if (player.hitbox.position.x + player.hitbox.width <= door.position.x + door.width &&
-                    player.hitbox.position.x >= door.position.x &&
-                    player.hitbox.position.y + player.hitbox.height >= door.position.y &&
-                    player.hitbox.position.y <= door.position.y + door.height) {
-                        player.velocity.x   = 0
-                        player.velocity.y   = 0
-                        player.preventInput = true
-                        player.switchSprite('enterDoor')
+                if (this.hitbox.position.x + this.hitbox.width <= door.position.x + door.width &&
+                    this.hitbox.position.x >= door.position.x &&
+                    this.hitbox.position.y + this.hitbox.height >= door.position.y &&
+                    this.hitbox.position.y <= door.position.y + door.height) {
+                        this.velocity.x   = 0
+                        this.velocity.y   = 0
+                        this.preventInput = true
+                        this.switchSprite('enterDoor')
                         door.play()
-                        console.log("We are colliding")
                         return
                 }
             }
@@ -83,11 +82,12 @@ class Player extends Sprite {
 
     switchSprite(name) {
         if (this.image === this.animations[name].image) return
-        this.currentFrame = 0
-        this.image        = this.animations[name].image
-        this.frameRate    = this.animations[name].frameRate
-        this.frameBuffer  = this.animations[name].frameBuffer
-        this.loop         = this.animations[name].loop
+        this.currentFrame     = 0
+        this.image            = this.animations[name].image
+        this.frameRate        = this.animations[name].frameRate
+        this.frameBuffer      = this.animations[name].frameBuffer
+        this.loop             = this.animations[name].loop
+        this.currentAnimation = this.animations[name]
     }
 
     updateHitbox() {
@@ -157,7 +157,7 @@ class Player extends Sprite {
                     const offset = this.hitbox.position.y - this.position.y + this.hitbox.height
                     this.position.y = collisionBlock.position.y - offset - 0.01;
                     if (aPressed) {
-                        player.velocity.y = -8;
+                        this.velocity.y = -8;
                     }
                     break
                 }
